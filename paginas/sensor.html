@@ -22,7 +22,7 @@
             // O alerta para confirmar que o comando chegou
             alert("Sinal Recebido: " + dados); 
             
-            var p = dados.split(',');
+            var p = dados.split(",");
             if (p.length >= 5) {
                 document.getElementById('bat-level').innerText = p[0] + "%";
                 document.getElementById('bat-status').innerText = p[1];
