@@ -64,34 +64,40 @@
     <script>
         window.addEventListener('message', function(event) {
             var m = event.data;
-            if (m && m.includes(',')) {
+            // Verifica se os dados chegaram e se contêm vírgulas
+            if (m && typeof m === 'string' && m.includes(',')) {
                 var p = m.split(',');
                 
+                // Organizando as gavetas com os dados que o Kodular envia
                 var ramPerc = Math.round(parseFloat(p[0])) || 0;
                 var intPerc = Math.round(parseFloat(p[1])) || 0;
                 var ramUsoMB = p[2] || "0";
                 var ramLivreMB = p[3] || "0";
                 var ramTotalMB = p[4] || "0";
-                var intUsoMB = parseInt(p[5]) || 0;
-                var intTotalMB = parseInt(p[6]) || 0;
-                var intLivreMB = intTotalMB - intUsoMB;
+                var intUsoMB = p[5] || "0";
+                var intTotalMB = p[6] || "0";
+                
+                // Calcula o espaço livre do disco
+                var intLivreMB = (parseInt(intTotalMB) - parseInt(intUsoMB)) || 0;
 
-                // Atualizando Interface
+                // Atualizando o Círculo do Topo
                 document.getElementById('txt-perc-topo').innerText = ramPerc + "%";
 
-                // RAM
+                // Atualizando RAM
                 document.getElementById('txt-ram-uso').innerText = ramUsoMB + " MB (" + ramPerc + "%)";
                 document.getElementById('barra-ram-uso').style.width = ramPerc + "%";
+                
                 document.getElementById('txt-ram-livre').innerText = ramLivreMB + " MB (" + (100 - ramPerc) + "%)";
                 document.getElementById('barra-ram-livre').style.width = (100 - ramPerc) + "%";
                 
-                // INTERNO
+                // Atualizando ARMAZENAMENTO INTERNO
                 document.getElementById('txt-int-uso').innerText = intUsoMB + " MB (" + intPerc + "%)";
                 document.getElementById('barra-int-uso').style.width = intPerc + "%";
+                
                 document.getElementById('txt-int-livre').innerText = intLivreMB + " MB (" + (100 - intPerc) + "%)";
                 document.getElementById('barra-int-livre').style.width = (100 - intPerc) + "%";
                 
-                // Totais
+                // Totais no Rodapé
                 document.getElementById('txt-ram-total').innerText = ramTotalMB + " MB";
                 document.getElementById('txt-int-total').innerText = intTotalMB + " MB";
             }
