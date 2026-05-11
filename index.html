@@ -69,7 +69,6 @@
         }
         .tab.active { background: #6C3CE1; color: white; box-shadow: 0 0 15px rgba(108, 60, 225, 0.5); }
 
-        /* AJUSTE DO CONTAINER: Agora ele ocupa todo o resto da tela */
         .iframe-container { 
             margin: 0; 
             border: none; 
@@ -103,19 +102,22 @@
     </div>
 
     <script>
-        function receiveData(data) {
-    // Esse comando quebra a linha de texto nas vírgulas
-    var dados = data.split(",");
+        // Função para trocar as abas
+        function mudar(aba, url, titulo) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            aba.classList.add('active');
+            document.getElementById('frame').src = url;
+            document.getElementById('sub').innerText = titulo;
+        }
 
-    // Aqui a mágica acontece: ele coloca cada valor no seu lugar
-    if (dados.length >= 5) {
-        document.getElementById("nivel").innerHTML = dados[0] + "%";
-        document.getElementById("status").innerHTML = dados[1];
-        document.getElementById("temp").innerHTML = dados[2] + "°C";
-        document.getElementById("modelo").innerHTML = dados[3];
-        document.getElementById("versao").innerHTML = dados[4];
-    }
-}
+        // FUNÇÃO TURBINADA: Recebe do Kodular e envia para dentro do Iframe
+        function receiveData(data) {
+            var iframe = document.getElementById("frame");
+            if (iframe && iframe.contentWindow) {
+                // Envia os dados brutos para a página que estiver aberta no Iframe
+                iframe.contentWindow.postMessage(data, "*");
+            }
+        }
     </script>
 </body>
 </html>
