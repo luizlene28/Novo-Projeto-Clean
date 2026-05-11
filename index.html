@@ -103,33 +103,19 @@
     </div>
 
     <script>
-        function mudar(el, path, subtitulo) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('frame').src = path;
-            document.getElementById('sub').innerText = subtitulo;
-        }
+        function receiveData(data) {
+    // Esse comando quebra a linha de texto nas vírgulas
+    var dados = data.split(",");
 
-        // ESCUTA O KODULAR E MANDA PARA O PAINEL
-        setInterval(function() {
-            if (typeof window.AppInventor !== 'undefined') {
-                var dado = window.AppInventor.getWebViewString();
-                var iframe = document.getElementById('frame');
-                // Só envia se houver dado e o iframe estiver pronto
-                if (dado && houverMudanca(dado) && iframe.contentWindow) {
-                    iframe.contentWindow.postMessage(dado, '*');
-                }
-            }
-        }, 100);
-
-        var ultimoDado = "";
-        function houverMudanca(novoDado) {
-            if (novoDado !== ultimoDado) {
-                ultimoDado = novoDado;
-                return true;
-            }
-            return false;
-        }
+    // Aqui a mágica acontece: ele coloca cada valor no seu lugar
+    if (dados.length >= 5) {
+        document.getElementById("nivel").innerHTML = dados[0] + "%";
+        document.getElementById("status").innerHTML = dados[1];
+        document.getElementById("temp").innerHTML = dados[2] + "°C";
+        document.getElementById("modelo").innerHTML = dados[3];
+        document.getElementById("versao").innerHTML = dados[4];
+    }
+}
     </script>
 </body>
 </html>
