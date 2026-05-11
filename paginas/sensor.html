@@ -2,12 +2,25 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <style>
+        /* Isso deixa o texto branco e organizado */
+        body { color: white; font-family: sans-serif; padding: 20px; background-color: transparent; }
+        .row { margin-bottom: 12px; font-size: 18px; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        .label { font-weight: bold; color: #aaa; margin-right: 10px; }
+        .value { color: #00ff00; } /* Cor verde para os valores */
+    </style>
 </head>
 <body>
+    <div class="row"><span class="label">Nível atual:</span> <span id="bat-level" class="value">--</span></div>
+    <div class="row"><span class="label">Status:</span> <span id="bat-status" class="value">--</span></div>
+    <div class="row"><span class="label">Temperatura:</span> <span id="bat-temp" class="value">--</span></div>
+    <div class="row"><span class="label">Modelo:</span> <span id="dev-model" class="value">--</span></div>
+    <div class="row"><span class="label">Versão Android:</span> <span id="dev-android" class="value">--</span></div>
+
     <script>
         function receiveData(dados) {
-            // O alerta para confirmar que o sinal chegou
-            alert("Sinal recebido: " + dados); 
+            // O alerta para confirmar que o comando chegou
+            alert("Sinal Recebido: " + dados); 
             
             var p = dados.split(',');
             if (p.length >= 5) {
