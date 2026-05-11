@@ -1,11 +1,23 @@
-function receiveData(dados) {
-    alert("SINAL: " + dados); 
-    var p = dados.split(',');
-    if (p.length >= 5) {
-        document.getElementById('bat-level').innerText = p[0] + "%";
-        document.getElementById('bat-status').innerText = p[1];
-        document.getElementById('bat-temp').innerText = p[2] + "°C";
-        document.getElementById('dev-model').innerText = p[3];
-        document.getElementById('dev-android').innerText = p[4];
-    }
-}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <script>
+        function receiveData(dados) {
+            // O alerta para confirmar que o sinal chegou
+            alert("Sinal recebido: " + dados); 
+            
+            var p = dados.split(',');
+            if (p.length >= 5) {
+                document.getElementById('bat-level').innerText = p[0] + "%";
+                document.getElementById('bat-status').innerText = p[1];
+                document.getElementById('bat-temp').innerText = p[2] + "°C";
+                document.getElementById('dev-model').innerText = p[3];
+                document.getElementById('dev-android').innerText = p[4];
+            }
+        }
+    </script>
+</body>
+</html>
