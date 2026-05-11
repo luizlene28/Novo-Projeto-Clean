@@ -18,11 +18,11 @@
     <div class="row"><span class="label">Versão Android:</span> <span id="dev-android" class="value">--</span></div>
 
     <script>
-        function receiveData(dados) {
-            // O alerta para confirmar que o comando chegou
-            alert("Sinal Recebido: " + dados); 
-            
+        // Esta função escuta o que o INDEX (Pai) envia para dentro do Iframe
+        window.addEventListener("message", function(event) {
+            var dados = event.data;
             var p = dados.split(",");
+            
             if (p.length >= 5) {
                 document.getElementById('bat-level').innerText = p[0] + "%";
                 document.getElementById('bat-status').innerText = p[1];
@@ -30,7 +30,7 @@
                 document.getElementById('dev-model').innerText = p[3];
                 document.getElementById('dev-android').innerText = p[4];
             }
-        }
+        });
     </script>
 </body>
 </html>
