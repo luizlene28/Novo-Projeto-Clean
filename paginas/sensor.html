@@ -1,43 +1,11 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        :root { --accent-blue: #00E5FF; --accent-green: #76FF03; --accent-purple: #6C3CE1; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; background: transparent; color: white; }
-        .card { background: rgba(30, 16, 69, 0.85); border-radius: 20px; padding: 20px; border: 1px solid rgba(155, 109, 255, 0.4); backdrop-filter: blur(10px); margin-bottom: 15px; }
-        .row { display: flex; justify-content: space-between; margin: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
-        .label { color: #b3a5d9; font-size: 0.9rem; }
-        .value { color: var(--accent-blue); font-weight: bold; font-size: 0.9rem; }
-        .title { color: var(--accent-green); font-size: 1rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; display: flex; align-items: center; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <div class="title">🔋 Energia e Bateria</div>
-        <div class="row"><span class="label">Nível atual</span><span class="value" id="bat-level">0%</span></div>
-        <div class="row"><span class="label">Status</span><span class="value" id="bat-status">---</span></div>
-        <div class="row"><span class="label">Temperatura</span><span class="value" id="bat-temp">0°C</span></div>
-    </div>
-
-    <div class="card">
-        <div class="title">📱 Dispositivo</div>
-        <div class="row"><span class="label">Modelo</span><span class="value" id="dev-model">---</span></div>
-        <div class="row"><span class="label">Versão Android</span><span class="value" id="dev-android">---</span></div>
-    </div>
-
-   function receiveData(dados) {
-    alert("Chegou isso: " + dados); 
+function receiveData(dados) {
+    alert("SINAL: " + dados); 
     var p = dados.split(',');
     if (p.length >= 5) {
-            document.getElementById('bat-level').innerText = p[0] + "%";
-            document.getElementById('bat-status').innerText = p[1];
-            document.getElementById('bat-temp').innerText = p[2] + "°C";
-            document.getElementById('dev-model').innerText = p[3];
-            document.getElementById('dev-android').innerText = p[4];
-        }
+        document.getElementById('bat-level').innerText = p[0] + "%";
+        document.getElementById('bat-status').innerText = p[1];
+        document.getElementById('bat-temp').innerText = p[2] + "°C";
+        document.getElementById('dev-model').innerText = p[3];
+        document.getElementById('dev-android').innerText = p[4];
     }
-</script>
-</body>
-</html>
+}
