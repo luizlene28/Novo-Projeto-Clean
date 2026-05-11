@@ -27,10 +27,10 @@
         <div class="row"><span class="label">Versão Android</span><span class="value" id="dev-android">---</span></div>
     </div>
 
-   <script>
-    function receiveData(dados) {
-        var p = dados.split(',');
-        if (p.length >= 5) {
+   function receiveData(dados) {
+    alert("Chegou isso: " + dados); 
+    var p = dados.split(',');
+    if (p.length >= 5) {
             document.getElementById('bat-level').innerText = p[0] + "%";
             document.getElementById('bat-status').innerText = p[1];
             document.getElementById('bat-temp').innerText = p[2] + "°C";
