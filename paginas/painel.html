@@ -2,474 +2,100 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
-            --green: #5e9c76;
-            --red: #e74c3c;
-            --blue: #3498db;
-            --bg: #f5f7fa;
-            /* novas cores vibrantes para o estilo 3D */
-            --primary: #6C3CE1;
-            --primary-glow: #9B6DFF;
-            --accent1: #FF3D71;
-            --accent2: #FFB347;
-            --accent3: #00E5FF;
-            --accent4: #76FF03;
-            --accent5: #FF6EC7;
-            --accent6: #FFD740;
-            --surface-3d: #1e1338;
-            --card-bg: #1a1030;
-            --text-white: #ffffff;
+            --primary: #6C3CE1; --accent-red: #FF3D71; --accent-blue: #00E5FF; --accent-green: #76FF03;
         }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; background: transparent; color: white; overflow: hidden; }
+        .main-block { background: rgba(30, 16, 69, 0.85); border-radius: 20px; padding: 15px; border: 1px solid rgba(155, 109, 255, 0.4); backdrop-filter: blur(10px); }
+        
+        /* O Círculo Grande de Volta */
+        .circle { width: 110px; height: 110px; border: 4px solid var(--accent-blue); border-radius: 50%; margin: 0 auto 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); background: rgba(0,0,0,0.2); }
+        .circle b { font-size: 1.8rem; text-shadow: 0 0 10px var(--accent-blue); }
+        .circle small { font-size: 0.6rem; color: #b3a5d9; }
 
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            padding: 15px;
-            background: radial-gradient(ellipse at 30% 20%, #1a1040 0%, #0a0618 40%, #05030f 100%);
-            background-attachment: fixed;
-            margin: 0;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Partículas de fundo */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            background: radial-gradient(circle at 15% 25%, rgba(108, 60, 225, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 75% 60%, rgba(255, 61, 113, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(0, 229, 255, 0.06) 0%, transparent 50%),
-                radial-gradient(circle at 85% 15%, rgba(255, 179, 71, 0.07) 0%, transparent 40%);
-        }
-
-        /* Orbes flutuantes */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            filter: blur(80px);
-            animation: floatOrb 12s ease-in-out infinite;
-        }
-
-        .bg-orb.orb1 {
-            width: 300px;
-            height: 300px;
-            background: rgba(108, 60, 225, 0.25);
-            top: -100px;
-            left: -80px;
-            animation-delay: 0s;
-        }
-
-        .bg-orb.orb2 {
-            width: 250px;
-            height: 250px;
-            background: rgba(255, 61, 113, 0.2);
-            bottom: -80px;
-            right: -60px;
-            animation-delay: -4s;
-            animation-duration: 14s;
-        }
-
-        .bg-orb.orb3 {
-            width: 200px;
-            height: 200px;
-            background: rgba(0, 229, 255, 0.18);
-            top: 50%;
-            left: 60%;
-            animation-delay: -8s;
-            animation-duration: 16s;
-        }
-
-        @keyframes floatOrb {
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-            25% {
-                transform: translate(40px, -30px) scale(1.15);
-            }
-            50% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-            75% {
-                transform: translate(-35px, -15px) scale(1.1);
-            }
-        }
-
-        /* Container principal com estilo de loja 3D */
-        .main-block {
-            background: linear-gradient(145deg, #1e1045 0%, #281558 30%, #1a0f3c 60%, #12082e 100%);
-            border-radius: 24px;
-            padding: 25px 20px 20px;
-            position: relative;
-            margin: 0 auto;
-            max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7),
-                0 0 0 1px rgba(155, 109, 255, 0.25),
-                0 0 40px rgba(108, 60, 225, 0.3);
-            border: 2px solid rgba(155, 109, 255, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: var(--text-white);
-            transform-style: preserve-3d;
-            perspective: 800px;
-            z-index: 2;
-        }
-
-        /* Moldura brilhante */
-        .main-block::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: 20px;
-            right: 20px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5) 20%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0.5) 80%, transparent);
-            z-index: 12;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        /* Cubo 3D no topo esquerdo */
-        .cube-outer-wrapper {
-            position: absolute;
-            top: 10px;
-            left: 12px;
-            z-index: 15;
-            filter: drop-shadow(0 8px 16px rgba(108, 60, 225, 0.6)) drop-shadow(0 0 20px rgba(155, 109, 255, 0.4));
-            animation: cubeFloat 4s ease-in-out infinite;
-        }
-
-        @keyframes cubeFloat {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-5px);
-            }
-            60% {
-                transform: translateY(-2px);
-            }
-            85% {
-                transform: translateY(-4px);
-            }
-        }
-
-        .cube-scene {
-            width: 45px;
-            height: 45px;
-            perspective: 400px;
-            perspective-origin: 50% 50%;
-        }
-
-        .cube-3d {
-            width: 45px;
-            height: 45px;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotateCube 10s cubic-bezier(0.45, 0.05, 0.35, 0.95) infinite;
-        }
-
-        @keyframes rotateCube {
-            0% {
-                transform: rotateY(0deg) rotateX(15deg) rotateZ(0deg);
-            }
-            20% {
-                transform: rotateY(120deg) rotateX(20deg) rotateZ(3deg);
-            }
-            40% {
-                transform: rotateY(240deg) rotateX(10deg) rotateZ(-3deg);
-            }
-            55% {
-                transform: rotateY(300deg) rotateX(22deg) rotateZ(5deg);
-            }
-            70% {
-                transform: rotateY(380deg) rotateX(14deg) rotateZ(-2deg);
-            }
-            85% {
-                transform: rotateY(460deg) rotateX(18deg) rotateZ(1deg);
-            }
-            100% {
-                transform: rotateY(720deg) rotateX(15deg) rotateZ(0deg);
-            }
-        }
-
-        .cube-face {
-            position: absolute;
-            width: 45px;
-            height: 45px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 20px;
-            color: #fff;
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-            backface-visibility: visible;
-            border: 1.5px solid rgba(255, 255, 255, 0.4);
-            box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.5px;
-            user-select: none;
-        }
-
-        .cube-face.front {
-            background: linear-gradient(145deg, #FF3D71, #e0305e);
-            transform: translateZ(22.5px);
-        }
-
-        .cube-face.back {
-            background: linear-gradient(145deg, #00E5FF, #00b8d4);
-            transform: rotateY(180deg) translateZ(22.5px);
-        }
-
-        .cube-face.right {
-            background: linear-gradient(145deg, #FFB347, #ff9800);
-            transform: rotateY(90deg) translateZ(22.5px);
-        }
-
-        .cube-face.left {
-            background: linear-gradient(145deg, #9B6DFF, #7c4dff);
-            transform: rotateY(-90deg) translateZ(22.5px);
-        }
-
-        .cube-face.top {
-            background: linear-gradient(145deg, #76FF03, #64dd17);
-            transform: rotateX(90deg) translateZ(22.5px);
-        }
-
-        .cube-face.bottom {
-            background: linear-gradient(145deg, #FF6EC7, #f5009b);
-            transform: rotateX(-90deg) translateZ(22.5px);
-        }
-
-        /* Glow ao redor do cubo */
-        .cube-outer-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(155, 109, 255, 0.6) 0%, transparent 70%);
-            z-index: -1;
-            animation: pulseGlow 3s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes pulseGlow {
-            0%,
-            100% {
-                transform: translate(-50%, -50%) scale(0.8);
-                opacity: 0.6;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.4);
-                opacity: 1;
-            }
-        }
-
-        /* Círculo de porcentagem com aparência 3D */
-        .circle {
-            width: 110px;
-            height: 110px;
-            border: 6px solid transparent;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 15px auto 20px;
-            font-weight: bold;
-            color: var(--text-white);
-            background: linear-gradient(145deg, #2a1a4a, #100826);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5),
-                inset 0 2px 8px rgba(255, 255, 255, 0.1),
-                0 0 20px rgba(108, 60, 225, 0.4);
-            position: relative;
-            z-index: 5;
-            border-image: linear-gradient(135deg, #FF3D71, #9B6DFF, #00E5FF) 1;
-            animation: borderGlow 3s linear infinite;
-        }
-
-        @keyframes borderGlow {
-            0% {
-                border-image: linear-gradient(0deg, #FF3D71, #9B6DFF, #00E5FF) 1;
-            }
-            25% {
-                border-image: linear-gradient(90deg, #FF3D71, #9B6DFF, #00E5FF) 1;
-            }
-            50% {
-                border-image: linear-gradient(180deg, #FF3D71, #9B6DFF, #00E5FF) 1;
-            }
-            75% {
-                border-image: linear-gradient(270deg, #FF3D71, #9B6DFF, #00E5FF) 1;
-            }
-            100% {
-                border-image: linear-gradient(360deg, #FF3D71, #9B6DFF, #00E5FF) 1;
-            }
-        }
-
-        .circle b {
-            font-size: 1.8rem;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-            background: linear-gradient(180deg, #fff 0%, #c9b8f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 800;
-            z-index: 2;
-        }
-
-        .circle small {
-            font-size: 0.6rem;
-            color: #b3a5d9;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-            z-index: 2;
-        }
-
-        /* Linhas de status */
-        .stat-row {
-            margin-bottom: 18px;
-        }
-
-        .info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-            font-weight: bold;
-            color: #d5ccf0;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.5px;
-        }
-
-        .bar {
-            width: 100%;
-            height: 10px;
-            background: #1d1235;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .fill {
-            height: 100%;
-            transition: width 1s ease-in-out;
-            border-radius: 6px;
-            box-shadow: 0 0 15px currentColor;
-            position: relative;
-        }
-
-        /* Cores das barras com efeito glow */
-        #barra-ram-uso.fill {
-            background: linear-gradient(90deg, #ff4d6d, #ff1e4d);
-            box-shadow: 0 0 18px #ff3d71;
-        }
-
-        #barra-ram-livre.fill {
-            background: linear-gradient(90deg, #76ff03, #4caf50);
-            box-shadow: 0 0 18px #76ff03;
-        }
-
-        #barra-interna.fill {
-            background: linear-gradient(90deg, #00e5ff, #0091ff);
-            box-shadow: 0 0 18px #00e5ff;
-        }
-
-        /* Separador estilizado */
-        .main-block div[style*="height: 1px"] {
-            background: linear-gradient(90deg, transparent, rgba(155, 109, 255, 0.5), transparent) !important;
-            margin: 20px 0;
-            height: 2px !important;
-            border-radius: 1px;
-        }
-
-        /* Adaptação para mobile */
-        @media (max-width: 450px) {
-            .main-block {
-                padding: 20px 15px;
-            }
-            .cube-outer-wrapper {
-                top: 5px;
-                left: 5px;
-                transform: scale(0.9);
-            }
-        }
+        .section-title { font-size: 0.75rem; color: var(--accent-blue); font-weight: bold; text-transform: uppercase; margin-top: 10px; border-bottom: 1px solid rgba(0, 229, 255, 0.2); padding-bottom: 3px; }
+        
+        .stat-row { margin: 12px 0; text-align: left; }
+        .info { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; color: #b3a5d9; }
+        .mb-info { font-size: 0.75rem; color: #fff; font-weight: bold; }
+        
+        .bar { width: 100%; height: 8px; background: #1a1035; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .fill { height: 100%; width: 0%; transition: width 0.8s ease-in-out; }
+        
+        #barra-ram-uso { background: linear-gradient(90deg, #FF3D71, #FF1E4D); }
+        #barra-ram-livre { background: linear-gradient(90deg, #76FF03, #4CAF50); }
+        #barra-int-uso { background: linear-gradient(90deg, #00E5FF, #0091FF); }
+        #barra-int-livre { background: linear-gradient(90deg, #FFC107, #FF9800); }
+        
+        .footer-info { font-size: 0.65rem; color: rgba(255,255,255,0.4); text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <!-- Orbes decorativas -->
-    <div class="bg-orb orb1"></div>
-    <div class="bg-orb orb2"></div>
-    <div class="bg-orb orb3"></div>
-
     <div class="main-block">
-        <!-- Cubo 3D no topo esquerdo -->
-        <div class="cube-outer-wrapper">
-            <div class="cube-scene">
-                <div class="cube-3d">
-                    <div class="cube-face front">L</div>
-                    <div class="cube-face back">C</div>
-                    <div class="cube-face right">S</div>
-                    <div class="cube-face left">M</div>
-                    <div class="cube-face top">✦</div>
-                    <div class="cube-face bottom">P</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="circle">
-            <b id="ram-perc-texto" style="font-size: 1.8rem;">0%</b>
-            <small style="font-size: 0.6rem; color: #b3a5d9;">EM USO</small>
-        </div>
-
+        <div class="circle"><b id="txt-perc-topo">0%</b><small>RAM EM USO</small></div>
+        
+        <div class="section-title">Memória RAM</div>
         <div class="stat-row">
-            <div class="info">RAM em Uso <span id="ram-uso-valor">0 MB</span></div>
-            <div class="bar"><div id="barra-ram-uso" class="fill" style="width: 0%;"></div></div>
+            <div class="info">Em Uso: <span class="mb-info" id="txt-ram-uso">0 MB (0%)</span></div>
+            <div class="bar"><div id="barra-ram-uso" class="fill"></div></div>
+        </div>
+        <div class="stat-row">
+            <div class="info">Disponível: <span class="mb-info" id="txt-ram-livre">0 MB (0%)</span></div>
+            <div class="bar"><div id="barra-ram-livre" class="fill"></div></div>
         </div>
 
+        <div class="section-title">Armazenamento Interno</div>
         <div class="stat-row">
-            <div class="info">RAM Disponível <span id="ram-livre-valor">0 MB</span></div>
-            <div class="bar"><div id="barra-ram-livre" class="fill" style="width: 0%;"></div></div>
+            <div class="info">Ocupado: <span class="mb-info" id="txt-int-uso">0 MB (0%)</span></div>
+            <div class="bar"><div id="barra-int-uso" class="fill"></div></div>
         </div>
-
-        <div style="height: 1px; background: #eee; margin: 20px 0;"></div>
-
         <div class="stat-row">
-            <div class="info">Espaço Interno <span id="interna-valor">0 GB / 0 GB</span></div>
-            <div class="bar"><div id="barra-interna" class="fill" style="width: 0%;"></div></div>
+            <div class="info">Livre: <span class="mb-info" id="txt-int-livre">0 MB (0%)</span></div>
+            <div class="bar"><div id="barra-int-livre" class="fill"></div></div>
+        </div>
+        
+        <div class="footer-info">
+            Sistema: <span id="txt-ram-total">0 MB</span> | Total Disco: <span id="txt-int-total">0 MB</span>
         </div>
     </div>
 
     <script>
-        function atualizarTudo(perc, uso, livre, internaPerc, internaTexto) {
-            document.getElementById('ram-perc-texto').innerText = perc + "%";
-            document.getElementById('barra-ram-uso').style.width = perc + "%";
-            document.getElementById('ram-uso-valor').innerText = uso + " MB";
-            document.getElementById('barra-ram-livre').style.width = (100 - perc) + "%";
-            document.getElementById('ram-livre-valor').innerText = livre + " MB";
-            document.getElementById('barra-interna').style.width = internaPerc + "%";
-            document.getElementById('interna-valor').innerText = internaTexto;
-        }
+        window.addEventListener('message', function(event) {
+            var m = event.data;
+            if (m && m.includes(',')) {
+                var p = m.split(',');
+                
+                var ramPerc = Math.round(parseFloat(p[0])) || 0;
+                var intPerc = Math.round(parseFloat(p[1])) || 0;
+                var ramUsoMB = p[2] || "0";
+                var ramLivreMB = p[3] || "0";
+                var ramTotalMB = p[4] || "0";
+                var intUsoMB = parseInt(p[5]) || 0;
+                var intTotalMB = parseInt(p[6]) || 0;
+                var intLivreMB = intTotalMB - intUsoMB;
+
+                // Atualizando Interface
+                document.getElementById('txt-perc-topo').innerText = ramPerc + "%";
+
+                // RAM
+                document.getElementById('txt-ram-uso').innerText = ramUsoMB + " MB (" + ramPerc + "%)";
+                document.getElementById('barra-ram-uso').style.width = ramPerc + "%";
+                document.getElementById('txt-ram-livre').innerText = ramLivreMB + " MB (" + (100 - ramPerc) + "%)";
+                document.getElementById('barra-ram-livre').style.width = (100 - ramPerc) + "%";
+                
+                // INTERNO
+                document.getElementById('txt-int-uso').innerText = intUsoMB + " MB (" + intPerc + "%)";
+                document.getElementById('barra-int-uso').style.width = intPerc + "%";
+                document.getElementById('txt-int-livre').innerText = intLivreMB + " MB (" + (100 - intPerc) + "%)";
+                document.getElementById('barra-int-livre').style.width = (100 - intPerc) + "%";
+                
+                // Totais
+                document.getElementById('txt-ram-total').innerText = ramTotalMB + " MB";
+                document.getElementById('txt-int-total').innerText = intTotalMB + " MB";
+            }
+        });
     </script>
 </body>
 </html>
