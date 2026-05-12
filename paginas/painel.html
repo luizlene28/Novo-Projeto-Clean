@@ -10,12 +10,23 @@
     </div>
 
     <script>
-        window.addEventListener('message', function(event) {
-            var d = event.data;
-            document.getElementById('status').innerText = "Conectado!";
+    // Esta função escuta o bloco VERDE (WebViewString)
+    setInterval(function() {
+        var d = window.AppInventor.getWebViewString();
+        if (d && d.length > 0) {
+            document.getElementById('status').innerText = "Conectado via WebViewString!";
             document.getElementById('status').style.color = "#76FF03";
             document.getElementById('raw-data').innerText = d;
-        });
-    </script>
+        }
+    }, 500); // Checa a cada meio segundo
+
+    // Esta função escuta o bloco AZUL (Evaluate JS)
+    window.addEventListener('message', function(event) {
+        var d = event.data;
+        document.getElementById('status').innerText = "Conectado via Message!";
+        document.getElementById('status').style.color = "#76FF03";
+        document.getElementById('raw-data').innerText = d;
+    });
+</script>
 </body>
 </html>
