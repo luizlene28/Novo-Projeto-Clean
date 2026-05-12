@@ -34,23 +34,33 @@
             var d = event.data;
             if (d && d.includes(',')) {
                 var p = d.split(',');
+                
                 if (p[0] === "PAINEL") {
-                    // RAM: p[1]=%, p[2]=LivreMB, p[3]=TotalMB
-                    document.getElementById('txt-ram-perc').innerText = Math.round(p[1]) + "%";
-                    document.getElementById('txt-ram-livre').innerText = p[2] + " MB";
-                    document.getElementById('txt-ram-total').innerText = (parseFloat(p[3])/1024).toFixed(1) + " GB";
-                    
-                    // ARMAZENAMENTO: p[4]=LivreBytes (Inverso), p[5]=TotalBytes
-                    var livreBytes = parseFloat(p[4]) || 0;
-                    var totalBytes = parseFloat(p[5]) || 0;
-                    var usoBytes = totalBytes - livreBytes;
-                    
-                    var totalGB = (totalBytes / 1073741824).toFixed(1);
-                    var usoGB = (usoBytes / 1073741824).toFixed(1);
-                    var livreGB = (livreBytes / 1073741824).toFixed(1);
-                    var usoMB = Math.round(usoBytes / 1048576);
+                    // RAM (Limpando para garantir que é número)
+                    var ramPerc = parseFloat(p[1]) || 0;
+                    var ramLivre = parseFloat(p[2]) || 0;
+                    var ramTotal = parseFloat(p[3]) || 0;
 
-                    document.getElementById('txt-int-uso').innerText = usoMB + " MB / " + usoGB + " GB";
+                    document.getElementById('txt-ram-perc').innerText = Math.round(ramPerc) + "%";
+                    document.getElementById('txt-ram-livre').innerText = ramLivre.toFixed(0) + " MB";
+                    document.getElementById('txt-ram-total').innerText = (ramTotal/1024).toFixed(1) + " GB";
+                    
+                    // ARMAZENAMENTO (Limpando textos como "GB" ou "MB" que o File1 possa enviar)
+                    var livreRaw = p[4].replace(/[^0-9.]/g, '');
+                    var totalRaw = p[5].replace(/[^0-9.]/g, '');
+                    
+                    var livreBytes = parseFloat(livreRaw) || 0;
+                    var totalBytes = parseFloat(totalRaw) || 0;
+                    
+                    // Se o valor vier muito pequeno, é porque já está em GB, se for gigante, é Bytes
+                    var divisor = (totalBytes > 1000000) ? 1073741824 : 1;
+                    
+                    var totalGB = (totalBytes / divisor).toFixed(1);
+                    var livreGB = (livreBytes / divisor).toFixed(1);
+                    var usoGB = (totalGB - livreGB).toFixed(1);
+                    
+                    // Mostrando na tela
+                    document.getElementById('txt-int-uso').innerText = usoGB + " GB Ocupado";
                     document.getElementById('txt-int-livre').innerText = livreGB + " GB Disponível";
                 }
             }
