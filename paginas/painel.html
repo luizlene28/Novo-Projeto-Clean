@@ -4,96 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        :root {
-            --primary: #6C3CE1; --accent-red: #FF3D71; --accent-blue: #00E5FF; --accent-green: #76FF03;
-        }
+        :root { --primary: #6C3CE1; --accent-blue: #00E5FF; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; background: transparent; color: white; overflow: hidden; }
         .main-block { background: rgba(30, 16, 69, 0.85); border-radius: 20px; padding: 15px; border: 1px solid rgba(155, 109, 255, 0.4); backdrop-filter: blur(10px); }
-        
         .circle { width: 110px; height: 110px; border: 4px solid var(--accent-blue); border-radius: 50%; margin: 0 auto 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); background: rgba(0,0,0,0.2); }
         .circle b { font-size: 1.8rem; text-shadow: 0 0 10px var(--accent-blue); }
         .circle small { font-size: 0.6rem; color: #b3a5d9; }
-
         .section-title { font-size: 0.75rem; color: var(--accent-blue); font-weight: bold; text-transform: uppercase; margin-top: 10px; border-bottom: 1px solid rgba(0, 229, 255, 0.2); padding-bottom: 3px; }
-        
         .stat-row { margin: 12px 0; text-align: left; }
         .info { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; color: #b3a5d9; }
         .mb-info { font-size: 0.75rem; color: #fff; font-weight: bold; }
-        
-        .bar { width: 100%; height: 8px; background: #1a1035; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .fill { height: 100%; width: 0%; transition: width 0.8s ease-in-out; }
-        
-        #barra-bat { background: linear-gradient(90deg, #76FF03, #4CAF50); }
-        #barra-int-uso { background: linear-gradient(90deg, #00E5FF, #0091FF); }
-        #barra-int-livre { background: linear-gradient(90deg, #FFC107, #FF9800); }
-        
-        .footer-info { font-size: 0.65rem; color: rgba(255,255,255,0.4); text-align: center; margin-top: 10px; }
+        .bar { width: 100%; height: 8px; background: #1a1035; border-radius: 4px; overflow: hidden; }
+        .fill { height: 100%; width: 0%; transition: width 0.8s ease; background: linear-gradient(90deg, #00E5FF, #0091FF); }
     </style>
 </head>
 <body>
     <div class="main-block">
-        <div class="circle"><b id="txt-perc-topo">0%</b><small>BATERIA</small></div>
+        <div class="circle"><b id="txt-circulo">0%</b><small>BATERIA</small></div>
         
-        <div class="section-title">Energia e Sistema</div>
+        <div class="section-title">Informações do Sistema</div>
         <div class="stat-row">
-            <div class="info"><span id="txt-modelo">Celular</span>: <span class="mb-info" id="txt-bat-status">--</span></div>
-            <div class="bar"><div id="barra-bat" class="fill"></div></div>
+            <div class="info">Modelo: <span class="mb-info" id="txt-modelo">--</span></div>
+            <div class="info">Android: <span class="mb-info" id="txt-android">--</span></div>
         </div>
 
         <div class="section-title">Armazenamento Interno</div>
         <div class="stat-row">
-            <div class="info">Espaço Ocupado: <span class="mb-info" id="txt-int-uso">0 GB</span></div>
-            <div class="bar"><div id="barra-int-uso" class="fill"></div></div>
+            <div class="info">Ocupado: <span class="mb-info" id="txt-uso">0 GB</span></div>
+            <div class="bar"><div id="barra-uso" class="fill"></div></div>
         </div>
         <div class="stat-row">
-            <div class="info">Espaço Livre: <span class="mb-info" id="txt-int-livre">0 GB</span></div>
-            <div class="bar"><div id="barra-int-livre" class="fill"></div></div>
-        </div>
-        
-        <div class="footer-info">
-            Android: <span id="txt-android">--</span> | Total Disco: <span id="txt-int-total">0 GB</span>
+            <div class="info">Total do Disco: <span class="mb-info" id="txt-total">0 GB</span></div>
         </div>
     </div>
 
     <script>
         window.addEventListener('message', function(event) {
-            var m = event.data;
-            if (m && typeof m === 'string' && m.includes(',')) {
-                var p = m.split(',');
+            var data = event.data;
+            if (data && data.includes(',')) {
+                var p = data.split(',');
+
+                // Pela sua "tripona" do Kodular:
+                // p[0]=Bateria, p[1]=Status, p[2]=Temp, p[3]=Modelo, p[4]=Android, p[5]=Total, p[6]=Usado
                 
-                // AJUSTE EXATO PARA A SUA TRIPONA DE BLOCOS:
                 var bateria = p[0] || "0";
-                var status = p[1] || "--";
-                var modelo = p[3] || "Dispositivo";
+                var modelo = p[3] || "Celular";
                 var android = p[4] || "--";
                 
-                // Os dados do File1 que você adicionou por último:
-                var totalBytes = parseFloat(p[5]) || 0; 
-                var usoBytes = parseFloat(p[6]) || 0;
+                // Pegando os números de espaço
+                var totalRaw = parseFloat(p[5]) || 0;
+                var usoRaw = parseFloat(p[6]) || 0;
 
-                // Transformando o "numerão" em GB para ficar bonito
-                var totalGB = (totalBytes / 1073741824).toFixed(1); 
-                var usoGB = (usoBytes / 1073741824).toFixed(1);
-                
-                if(totalGB == 0) { totalGB = (totalBytes / 1024).toFixed(1); } // Fallback caso seja MB
+                // Convertendo para GB (Divisão simples por 1024 três vezes)
+                var totalGB = (totalRaw / 1024 / 1024 / 1024).toFixed(1);
+                var usoGB = (usoRaw / 1024 / 1024 / 1024).toFixed(1);
+                var porcentagem = Math.round((usoGB / totalGB) * 100) || 0;
 
-                var intPerc = Math.round((usoGB / totalGB) * 100) || 0;
-                var livreGB = (totalGB - usoGB).toFixed(1);
-
-                // ATUALIZANDO A TELA
-                document.getElementById('txt-perc-topo').innerText = bateria + "%";
+                // Atualizando a tela
+                document.getElementById('txt-circulo').innerText = bateria + "%";
                 document.getElementById('txt-modelo').innerText = modelo;
-                document.getElementById('txt-bat-status').innerText = bateria + "% (" + status + ")";
-                document.getElementById('barra-bat').style.width = bateria + "%";
-
-                document.getElementById('txt-int-uso').innerText = usoGB + " GB (" + intPerc + "%)";
-                document.getElementById('barra-int-uso').style.width = intPerc + "%";
-                
-                document.getElementById('txt-int-livre').innerText = livreGB + " GB";
-                document.getElementById('barra-int-livre').style.width = (100 - intPerc) + "%";
-                
-                document.getElementById('txt-int-total').innerText = totalGB + " GB";
-                document.getElementById('txt-android').innerText = android;
+                document.getElementById('txt-android').innerText = "Versão " + android;
+                document.getElementById('txt-uso').innerText = usoGB + " GB (" + porcentagem + "%)";
+                document.getElementById('txt-total').innerText = totalGB + " GB";
+                document.getElementById('barra-uso').style.width = porcentagem + "%";
             }
         });
     </script>
