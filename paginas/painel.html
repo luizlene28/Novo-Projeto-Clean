@@ -1,32 +1,60 @@
 <!DOCTYPE html>
-<html>
-<body style="background: #1a1035; color: white; font-family: sans-serif; padding: 20px;">
-    <h3 style="color: #00E5FF;">📡 Scanner de Dados</h3>
-    <p>Status: <span id="status" style="color: yellow;">Aguardando sinal do App...</span></p>
-    <hr>
-    <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px;">
-        <p><b>Última mensagem recebida:</b></p>
-        <code id="raw-data" style="word-break: break-all; color: #76FF03;">(Nenhum dado chegou ainda)</code>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root { --accent: #00E5FF; }
+        body { font-family: sans-serif; margin: 0; padding: 15px; background: transparent; color: white; overflow: hidden; }
+        .main-block { background: rgba(30, 16, 69, 0.9); border-radius: 20px; padding: 20px; border: 1px solid rgba(155, 109, 255, 0.4); text-align: center; }
+        .circle { width: 110px; height: 110px; border: 4px solid var(--accent); border-radius: 50%; margin: 0 auto 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); }
+        .circle b { font-size: 1.8rem; color: #fff; }
+        .circle small { font-size: 0.6rem; color: #b3a5d9; text-transform: uppercase; }
+        .section-title { font-size: 0.75rem; color: var(--accent); font-weight: bold; text-transform: uppercase; margin: 15px 0 5px; border-bottom: 1px solid rgba(0, 229, 255, 0.2); text-align: left; }
+        .info-row { margin: 8px 0; text-align: left; display: flex; flex-direction: column; }
+        .label { color: #b3a5d9; font-size: 0.65rem; text-transform: uppercase; }
+        .value { color: #fff; font-weight: bold; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="main-block">
+        <div class="circle"><b id="ram-p">0%</b><small>RAM em uso</small></div>
+        
+        <div class="section-title">Memória RAM</div>
+        <div class="info-row"><span class="label">Disponível:</span><span id="ram-l" class="value">0 MB</span></div>
+        <div class="info-row"><span class="label">Espaço Usado:</span><span id="ram-t" class="value">0.0 GB</span></div>
+
+        <div class="section-title">Armazenamento Interno</div>
+        <div class="info-row"><span class="label">Ocupado (MB / Decimal):</span><span id="int-u" class="value">0 MB / 0.0 GB</span></div>
+        <div class="info-row"><span class="label">Livre no Celular:</span><span id="int-l" class="value">0.0 GB</span></div>
     </div>
 
     <script>
-    // Esta função escuta o bloco VERDE (WebViewString)
-    setInterval(function() {
-        var d = window.AppInventor.getWebViewString();
-        if (d && d.length > 0) {
-            document.getElementById('status').innerText = "Conectado via WebViewString!";
-            document.getElementById('status').style.color = "#76FF03";
-            document.getElementById('raw-data').innerText = d;
-        }
-    }, 500); // Checa a cada meio segundo
+        function atualizarPainel() {
+            var d = window.AppInventor.getWebViewString();
+            if (d && d.includes("PAINEL,")) {
+                var p = d.split(',');
+                // RAM
+                document.getElementById('ram-p').innerText = Math.round(parseFloat(p[1])) + "%";
+                document.getElementById('ram-l').innerText = p[2] + " MB";
+                document.getElementById('ram-t').innerText = (parseFloat(p[3])/1024).toFixed(1) + " GB";
+                
+                // ARMAZENAMENTO (p[4]=Livre, p[5]=Total)
+                var livreBytes = parseFloat(p[4].replace(/[^0-9.]/g, '')) || 0;
+                var totalBytes = parseFloat(p[5].replace(/[^0-9.]/g, '')) || 0;
+                var usoBytes = totalBytes - livreBytes;
 
-    // Esta função escuta o bloco AZUL (Evaluate JS)
-    window.addEventListener('message', function(event) {
-        var d = event.data;
-        document.getElementById('status').innerText = "Conectado via Message!";
-        document.getElementById('status').style.color = "#76FF03";
-        document.getElementById('raw-data').innerText = d;
-    });
-</script>
+                var div = (totalBytes > 1000000) ? 1073741824 : 1;
+                var tGB = (totalBytes / div).toFixed(1);
+                var lGB = (livreBytes / div).toFixed(1);
+                var uGB = (usoBytes / div).toFixed(1);
+                var uMB = Math.round(usoBytes / (div === 1 ? 1 : 1048576));
+
+                document.getElementById('int-u').innerText = uMB + " MB / " + uGB + " GB";
+                document.getElementById('int-l').innerText = lGB + " GB Disponível";
+            }
+        }
+        setInterval(atualizarPainel, 1000); // Atualiza a cada 1 segundo
+    </script>
 </body>
 </html>
