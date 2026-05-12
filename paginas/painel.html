@@ -61,21 +61,26 @@
             if (m && typeof m === 'string' && m.includes(',')) {
                 var p = m.split(',');
                 
-                // Posições baseadas na sua "tripona" de blocos:
+                // AJUSTE EXATO PARA A SUA TRIPONA DE BLOCOS:
                 var bateria = p[0] || "0";
                 var status = p[1] || "--";
                 var modelo = p[3] || "Dispositivo";
                 var android = p[4] || "--";
                 
-                // Converte de MB para GB (dividindo por 1024)
-                var totalGB = (parseFloat(p[5]) / 1024).toFixed(1); 
-                var usoGB = (parseFloat(p[6]) / 1024).toFixed(1);
+                // Os dados do File1 que você adicionou por último:
+                var totalBytes = parseFloat(p[5]) || 0; 
+                var usoBytes = parseFloat(p[6]) || 0;
+
+                // Transformando o "numerão" em GB para ficar bonito
+                var totalGB = (totalBytes / 1073741824).toFixed(1); 
+                var usoGB = (usoBytes / 1073741824).toFixed(1);
                 
-                // Cálculos de porcentagem e livre
+                if(totalGB == 0) { totalGB = (totalBytes / 1024).toFixed(1); } // Fallback caso seja MB
+
                 var intPerc = Math.round((usoGB / totalGB) * 100) || 0;
                 var livreGB = (totalGB - usoGB).toFixed(1);
 
-                // ATUALIZANDO OS TEXTOS NA TELA
+                // ATUALIZANDO A TELA
                 document.getElementById('txt-perc-topo').innerText = bateria + "%";
                 document.getElementById('txt-modelo').innerText = modelo;
                 document.getElementById('txt-bat-status').innerText = bateria + "% (" + status + ")";
@@ -84,7 +89,7 @@
                 document.getElementById('txt-int-uso').innerText = usoGB + " GB (" + intPerc + "%)";
                 document.getElementById('barra-int-uso').style.width = intPerc + "%";
                 
-                document.getElementById('txt-int-livre').innerText = livreGB + " GB (" + (100 - intPerc) + "%)";
+                document.getElementById('txt-int-livre').innerText = livreGB + " GB";
                 document.getElementById('barra-int-livre').style.width = (100 - intPerc) + "%";
                 
                 document.getElementById('txt-int-total').innerText = totalGB + " GB";
