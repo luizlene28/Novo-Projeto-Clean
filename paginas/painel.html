@@ -34,24 +34,29 @@
         var d = window.AppInventor.getWebViewString();
         if (d && d.includes("PAINEL,")) {
             var p = d.split(',');
-            // p[1]=% RAM, p[2]=RAM Livre, p[3]=RAM Total, p[4]=Espaço Total, p[5]=Espaço Livre
             
-            document.getElementById('ram-p').innerText = Math.round(parseFloat(p[1] || 0)) + "%";
-            document.getElementById('ram-l').innerText = (p[2] || 0) + " MB";
-            document.getElementById('ram-t').innerText = (parseFloat(p[3] || 0)/1024).toFixed(1) + " GB";
+            // 1. RAM (Tratando o valor que vem do Device Utilities)
+            var ramPercent = parseFloat(p[1] || 0);
+            document.getElementById('ram-p').innerText = Math.round(ramPercent) + "%";
             
-            var total = parseFloat(p[4] || 0);
-            var livre = parseFloat(p[5] || 0);
-            var uso = total - livre;
+            // 2. Armazenamento (Convertendo de Bytes/MB para GB real)
+            var totalRaw = parseFloat(p[4] || 0);
+            var livreRaw = parseFloat(p[5] || 0);
 
-            // Ajuste de escala para GB
-            var div = (total > 1000000) ? 1073741824 : 1;
+            // Se o número vier gigante (Bytes), dividimos. Se vier pequeno (GB), mantemos.
+            var totalGB = (totalRaw > 1000000) ? (totalRaw / 1073741824) : totalRaw;
+            var livreGB = (livreRaw > 1000000) ? (livreRaw / 1073741824) : livreRaw;
             
-            document.getElementById('int-u').innerText = (uso/div).toFixed(1) + " GB Ocupado";
-            document.getElementById('int-l').innerText = (livre/div).toFixed(1) + " GB Disponível";
+            var ocupadoGB = totalGB - livreGB;
+
+            // Só mostra se o valor for positivo e lógico
+            if (totalGB > 0) {
+                document.getElementById('int-l').innerText = livreGB.toFixed(1) + " GB Disponível";
+                document.getElementById('int-u').innerText = Math.abs(ocupadoGB).toFixed(1) + " GB Ocupado";
+            }
         }
     }
     setInterval(atualizarPainel, 1000);
-</script>
+    </script>
 </body>
 </html>
