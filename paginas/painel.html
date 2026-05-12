@@ -30,31 +30,28 @@
     </div>
 
     <script>
-        function atualizarPainel() {
-            var d = window.AppInventor.getWebViewString();
-            if (d && d.includes("PAINEL,")) {
-                var p = d.split(',');
-                // RAM
-                document.getElementById('ram-p').innerText = Math.round(parseFloat(p[1])) + "%";
-                document.getElementById('ram-l').innerText = p[2] + " MB";
-                document.getElementById('ram-t').innerText = (parseFloat(p[3])/1024).toFixed(1) + " GB";
-                
-                // ARMAZENAMENTO (p[4]=Livre, p[5]=Total)
-                var livreBytes = parseFloat(p[4].replace(/[^0-9.]/g, '')) || 0;
-                var totalBytes = parseFloat(p[5].replace(/[^0-9.]/g, '')) || 0;
-                var usoBytes = totalBytes - livreBytes;
+    function atualizarPainel() {
+        var d = window.AppInventor.getWebViewString();
+        if (d && d.includes("PAINEL,")) {
+            var p = d.split(',');
+            // p[1]=% RAM, p[2]=RAM Livre, p[3]=RAM Total, p[4]=Espaço Total, p[5]=Espaço Livre
+            
+            document.getElementById('ram-p').innerText = Math.round(parseFloat(p[1] || 0)) + "%";
+            document.getElementById('ram-l').innerText = (p[2] || 0) + " MB";
+            document.getElementById('ram-t').innerText = (parseFloat(p[3] || 0)/1024).toFixed(1) + " GB";
+            
+            var total = parseFloat(p[4] || 0);
+            var livre = parseFloat(p[5] || 0);
+            var uso = total - livre;
 
-                var div = (totalBytes > 1000000) ? 1073741824 : 1;
-                var tGB = (totalBytes / div).toFixed(1);
-                var lGB = (livreBytes / div).toFixed(1);
-                var uGB = (usoBytes / div).toFixed(1);
-                var uMB = Math.round(usoBytes / (div === 1 ? 1 : 1048576));
-
-                document.getElementById('int-u').innerText = uMB + " MB / " + uGB + " GB";
-                document.getElementById('int-l').innerText = lGB + " GB Disponível";
-            }
+            // Ajuste de escala para GB
+            var div = (total > 1000000) ? 1073741824 : 1;
+            
+            document.getElementById('int-u').innerText = (uso/div).toFixed(1) + " GB Ocupado";
+            document.getElementById('int-l').innerText = (livre/div).toFixed(1) + " GB Disponível";
         }
-        setInterval(atualizarPainel, 1000); // Atualiza a cada 1 segundo
-    </script>
+    }
+    setInterval(atualizarPainel, 1000);
+</script>
 </body>
 </html>
