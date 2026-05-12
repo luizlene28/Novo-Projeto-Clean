@@ -29,39 +29,45 @@
         <div class="info-row"><span class="label">Espaço Livre no Celular:</span><span id="txt-int-livre" class="value">0.0 GB Disponível</span></div>
     </div>
 
-    <script>
+<script>
         window.addEventListener('message', function(event) {
             var d = event.data;
             if (d && d.includes(',')) {
                 var p = d.split(',');
                 
                 if (p[0] === "PAINEL") {
-                    // RAM (Limpando para garantir que é número)
-                    var ramPerc = parseFloat(p[1]) || 0;
-                    var ramLivre = parseFloat(p[2]) || 0;
-                    var ramTotal = parseFloat(p[3]) || 0;
+                    // --- MEMÓRIA RAM ---
+                    var rPerc = p[1] || "0";
+                    var rLivre = p[2] || "0";
+                    var rTotal = p[3] || "0";
 
-                    document.getElementById('txt-ram-perc').innerText = Math.round(ramPerc) + "%";
-                    document.getElementById('txt-ram-livre').innerText = ramLivre.toFixed(0) + " MB";
-                    document.getElementById('txt-ram-total').innerText = (ramTotal/1024).toFixed(1) + " GB";
+                    document.getElementById('txt-ram-perc').innerText = Math.round(parseFloat(rPerc)) + "%";
+                    document.getElementById('txt-ram-livre').innerText = rLivre + " MB";
+                    document.getElementById('txt-ram-total').innerText = (parseFloat(rTotal)/1024).toFixed(1) + " GB";
                     
-                    // ARMAZENAMENTO (Limpando textos como "GB" ou "MB" que o File1 possa enviar)
-                    var livreRaw = p[4].replace(/[^0-9.]/g, '');
-                    var totalRaw = p[5].replace(/[^0-9.]/g, '');
+                    // --- ARMAZENAMENTO (FILE1) ---
+                    var livreRaw = p[4]; // O que vem do 5º bloco
+                    var totalRaw = p[5]; // O que vem do 6º bloco
                     
-                    var livreBytes = parseFloat(livreRaw) || 0;
-                    var totalBytes = parseFloat(totalRaw) || 0;
-                    
-                    // Se o valor vier muito pequeno, é porque já está em GB, se for gigante, é Bytes
-                    var divisor = (totalBytes > 1000000) ? 1073741824 : 1;
-                    
-                    var totalGB = (totalBytes / divisor).toFixed(1);
-                    var livreGB = (livreBytes / divisor).toFixed(1);
-                    var usoGB = (totalGB - livreGB).toFixed(1);
-                    
-                    // Mostrando na tela
-                    document.getElementById('txt-int-uso').innerText = usoGB + " GB Ocupado";
-                    document.getElementById('txt-int-livre').innerText = livreGB + " GB Disponível";
+                    // Se os dados estiverem vazios ou não forem números
+                    if (!livreRaw || !totalRaw || livreRaw === "0" || totalRaw === "0") {
+                        document.getElementById('txt-int-uso').innerText = "Erro: Dados Vazios";
+                        document.getElementById('txt-int-livre').innerText = "Verificar File1 no Kodular";
+                    } else {
+                        // Limpa qualquer texto e converte para número
+                        var nLivre = parseFloat(livreRaw.replace(/[^0-9.]/g, ''));
+                        var nTotal = parseFloat(totalRaw.replace(/[^0-9.]/g, ''));
+                        
+                        // Descobre se está em Bytes ou GB e faz a conta
+                        var div = (nTotal > 1000000) ? 1073741824 : 1;
+                        var tGB = (nTotal / div).toFixed(1);
+                        var lGB = (nLivre / div).toFixed(1);
+                        var uGB = (tGB - lGB).toFixed(1);
+                        var uMB = Math.round((nTotal - nLivre) / (div === 1 ? 1 : 1048576));
+
+                        document.getElementById('txt-int-uso').innerText = uMB + " MB / " + uGB + " GB";
+                        document.getElementById('txt-int-livre').innerText = lGB + " GB Disponível";
+                    }
                 }
             }
         });
