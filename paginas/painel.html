@@ -10,7 +10,6 @@
         body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; background: transparent; color: white; overflow: hidden; }
         .main-block { background: rgba(30, 16, 69, 0.85); border-radius: 20px; padding: 15px; border: 1px solid rgba(155, 109, 255, 0.4); backdrop-filter: blur(10px); }
         
-        /* O Círculo Grande de Volta */
         .circle { width: 110px; height: 110px; border: 4px solid var(--accent-blue); border-radius: 50%; margin: 0 auto 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); background: rgba(0,0,0,0.2); }
         .circle b { font-size: 1.8rem; text-shadow: 0 0 10px var(--accent-blue); }
         .circle small { font-size: 0.6rem; color: #b3a5d9; }
@@ -24,8 +23,7 @@
         .bar { width: 100%; height: 8px; background: #1a1035; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
         .fill { height: 100%; width: 0%; transition: width 0.8s ease-in-out; }
         
-        #barra-ram-uso { background: linear-gradient(90deg, #FF3D71, #FF1E4D); }
-        #barra-ram-livre { background: linear-gradient(90deg, #76FF03, #4CAF50); }
+        #barra-bat { background: linear-gradient(90deg, #76FF03, #4CAF50); }
         #barra-int-uso { background: linear-gradient(90deg, #00E5FF, #0091FF); }
         #barra-int-livre { background: linear-gradient(90deg, #FFC107, #FF9800); }
         
@@ -34,72 +32,63 @@
 </head>
 <body>
     <div class="main-block">
-        <div class="circle"><b id="txt-perc-topo">0%</b><small>RAM EM USO</small></div>
+        <div class="circle"><b id="txt-perc-topo">0%</b><small>BATERIA</small></div>
         
-        <div class="section-title">Memória RAM</div>
+        <div class="section-title">Energia e Sistema</div>
         <div class="stat-row">
-            <div class="info">Em Uso: <span class="mb-info" id="txt-ram-uso">0 MB (0%)</span></div>
-            <div class="bar"><div id="barra-ram-uso" class="fill"></div></div>
-        </div>
-        <div class="stat-row">
-            <div class="info">Disponível: <span class="mb-info" id="txt-ram-livre">0 MB (0%)</span></div>
-            <div class="bar"><div id="barra-ram-livre" class="fill"></div></div>
+            <div class="info"><span id="txt-modelo">Celular</span>: <span class="mb-info" id="txt-bat-status">--</span></div>
+            <div class="bar"><div id="barra-bat" class="fill"></div></div>
         </div>
 
         <div class="section-title">Armazenamento Interno</div>
         <div class="stat-row">
-            <div class="info">Ocupado: <span class="mb-info" id="txt-int-uso">0 MB (0%)</span></div>
+            <div class="info">Espaço Ocupado: <span class="mb-info" id="txt-int-uso">0 GB</span></div>
             <div class="bar"><div id="barra-int-uso" class="fill"></div></div>
         </div>
         <div class="stat-row">
-            <div class="info">Livre: <span class="mb-info" id="txt-int-livre">0 MB (0%)</span></div>
+            <div class="info">Espaço Livre: <span class="mb-info" id="txt-int-livre">0 GB</span></div>
             <div class="bar"><div id="barra-int-livre" class="fill"></div></div>
         </div>
         
         <div class="footer-info">
-            Sistema: <span id="txt-ram-total">0 MB</span> | Total Disco: <span id="txt-int-total">0 MB</span>
+            Android: <span id="txt-android">--</span> | Total Disco: <span id="txt-int-total">0 GB</span>
         </div>
     </div>
 
     <script>
         window.addEventListener('message', function(event) {
             var m = event.data;
-            // Verifica se os dados chegaram e se contêm vírgulas
             if (m && typeof m === 'string' && m.includes(',')) {
                 var p = m.split(',');
                 
-                // Organizando as gavetas com os dados que o Kodular envia
-                var ramPerc = Math.round(parseFloat(p[0])) || 0;
-                var intPerc = Math.round(parseFloat(p[1])) || 0;
-                var ramUsoMB = p[2] || "0";
-                var ramLivreMB = p[3] || "0";
-                var ramTotalMB = p[4] || "0";
-                var intUsoMB = p[5] || "0";
-                var intTotalMB = p[6] || "0";
+                // Posições baseadas na sua "tripona" de blocos:
+                var bateria = p[0] || "0";
+                var status = p[1] || "--";
+                var modelo = p[3] || "Dispositivo";
+                var android = p[4] || "--";
                 
-                // Calcula o espaço livre do disco
-                var intLivreMB = (parseInt(intTotalMB) - parseInt(intUsoMB)) || 0;
+                // Converte de MB para GB (dividindo por 1024)
+                var totalGB = (parseFloat(p[5]) / 1024).toFixed(1); 
+                var usoGB = (parseFloat(p[6]) / 1024).toFixed(1);
+                
+                // Cálculos de porcentagem e livre
+                var intPerc = Math.round((usoGB / totalGB) * 100) || 0;
+                var livreGB = (totalGB - usoGB).toFixed(1);
 
-                // Atualizando o Círculo do Topo
-                document.getElementById('txt-perc-topo').innerText = ramPerc + "%";
+                // ATUALIZANDO OS TEXTOS NA TELA
+                document.getElementById('txt-perc-topo').innerText = bateria + "%";
+                document.getElementById('txt-modelo').innerText = modelo;
+                document.getElementById('txt-bat-status').innerText = bateria + "% (" + status + ")";
+                document.getElementById('barra-bat').style.width = bateria + "%";
 
-                // Atualizando RAM
-                document.getElementById('txt-ram-uso').innerText = ramUsoMB + " MB (" + ramPerc + "%)";
-                document.getElementById('barra-ram-uso').style.width = ramPerc + "%";
-                
-                document.getElementById('txt-ram-livre').innerText = ramLivreMB + " MB (" + (100 - ramPerc) + "%)";
-                document.getElementById('barra-ram-livre').style.width = (100 - ramPerc) + "%";
-                
-                // Atualizando ARMAZENAMENTO INTERNO
-                document.getElementById('txt-int-uso').innerText = intUsoMB + " MB (" + intPerc + "%)";
+                document.getElementById('txt-int-uso').innerText = usoGB + " GB (" + intPerc + "%)";
                 document.getElementById('barra-int-uso').style.width = intPerc + "%";
                 
-                document.getElementById('txt-int-livre').innerText = intLivreMB + " MB (" + (100 - intPerc) + "%)";
+                document.getElementById('txt-int-livre').innerText = livreGB + " GB (" + (100 - intPerc) + "%)";
                 document.getElementById('barra-int-livre').style.width = (100 - intPerc) + "%";
                 
-                // Totais no Rodapé
-                document.getElementById('txt-ram-total').innerText = ramTotalMB + " MB";
-                document.getElementById('txt-int-total').innerText = intTotalMB + " MB";
+                document.getElementById('txt-int-total').innerText = totalGB + " GB";
+                document.getElementById('txt-android').innerText = android;
             }
         });
     </script>
